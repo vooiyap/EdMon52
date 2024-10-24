@@ -5,6 +5,7 @@
  EdMon52 is inspired by MINMON - The Minimal 8051 Monitor Program by Steven B. Leeb
  
  This version has following commands:
+ 
  G - go command 
  
  M - display Memory command
