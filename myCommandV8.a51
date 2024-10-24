@@ -194,13 +194,13 @@ DisplayNextAddress:
 		Mov DPH,R0		 ; Restore DPTR high nibble
 		Mov DPL,R1		 ; Restore DPTR low nibble
 			
-		Mov A,DPH        ; get High Byte of start address
+		Mov A,DPH        	 ; get High Byte of start address
             	Acall Hex2Ascii
             	Acall DispAddr
               
            	Mov A,DPL
             	Add A,#10h
-           	Mov R2,A          ;update R2
+           	Mov R2,A          	 ;update R2
 					
             	Acall Hex2Ascii
             	Acall DispAddr
@@ -330,7 +330,7 @@ commandSelector:
 ; This routine takes the character in Acc and sends it out to the serial port
 ;========================================================================================
 sendCharacter:
-		Clr  TI            		; clear the tx buffer full flag
+		Clr  TI            	; clear the tx buffer full flag
 		Mov  SBUF,A            	; put chr in SBUF
 transmitLoop:
 		Jnb  TI, transmitLoop  	; wait until chr is sent
@@ -462,11 +462,11 @@ Hex2AsciiLow:
 ; ------------ Data equal or greater goes here ------------
 NotEqual:	Jc LessThan
             	Add A,#37h		  ; Add 37h if range Ah->Fh
-            	Mov R6,A          ; send it to R6
+            	Mov R6,A          	  ; send it to R6
             	Sjmp StopCon
 ; --------------- Data less than goes here ----------------
 LessThan:	Add A,#30h		  ; Add 30h if range 0h->9h
-            	Mov R6,A          ; send it to R6			
+            	Mov R6,A          	  ; send it to R6			
 StopCon:	Ret
 
 Hex2AsciiHigh:		
@@ -499,9 +499,9 @@ HandleControlChar:
 CheckIfNonPrintable:	
 		Jc ReplaceControl		; Replace with '.'
 
-		Mov 30h, A				; Preserve Acc
+		Mov 30h, A			; Preserve Acc
 		Subb A, #7Fh			; Check if Acc > 7Fh
-		Mov A,30h				; Restore Acc
+		Mov A,30h			; Restore Acc
 		Jc ReturnNormal			; If < 7Fh then return and display 
 		Sjmp ReplaceControl		; Replace if > 7Fh
 
@@ -665,7 +665,7 @@ Zero29ConL:
             	Ret
 ;Convert A to F to hex - high nibble        
 A2FhConH:   
-	    	Clr C			  ;A-F - convert upper nibble
+	    	Clr C		  ;A-F - convert upper nibble
             	Subb A,#41h
            	Mov A,@R1
             	Jc Skip
