@@ -41,7 +41,7 @@ monitorLoop:
 			Acall   getCommand       ; read the single-letter command
 			Mov     R2, A            ; put the command number in R2
 			Ljmp    commandSelector  ; branch to a monitor routine
-endLoop:                 	         ; come here after command has finished
+endLoop:                 	         	 ; come here after command has finished
 			Ajmp 	monitorLoop      ; loop forever in monitor loop
 
 ;=================================================================================
@@ -62,7 +62,7 @@ jumpTable:
 DisplayMemory:      
 			Acall printString
 			db 0Dh, 0Ah,"Address: ", 0Dh, 0Ah, 0h
-Begin:      Acall printAddress
+Begin:      		Acall printAddress
 			Acall ConvertData2Hex
 
 ;--------------- The following will display one row of 16 hex values -----------------
@@ -72,14 +72,14 @@ DisplayOneRow:
 			Mov R0,DPH		  ; Save DPTR high nibble
 			Mov R1,DPL		  ; Save DPTR low nibble
 			
-Back:		Clr A      
-			Movc A,@A+DPTR    ; get data into Acc
+Back:			Clr A      
+			Movc A,@A+DPTR    	  ; get data into Acc
 
-            Acall Hex2Ascii
-            Acall DispChar
+           		Acall Hex2Ascii
+            		Acall DispChar
 			
-            Inc DPTR		  ; point to next data
-            Djnz R3,Back 	  ; Do it again if it is not equal 10h
+            		Inc DPTR	  	  ; point to next data
+            		 Djnz R3,Back 	  	  ; Do it again if it is not equal 10h
 ; At this point address and one row of hex values are displayed	
 ;------------------- End of displaying one row of hex values ------------------------
 
@@ -89,18 +89,18 @@ DispAscii:
 			Mov DPH,R0			; Restore DPTR high nibble
 			Mov DPL,R1			; Restore DPTR low nibble
 ;*Note* - DPH and DPL is a pointer to the address location - high and low byte
-Again:		Clr A  	
-			Movc A,@A+DPTR  	; Get data into Acc
-			Acall HandleControlChar  ; Handle control characters
-			Acall Transmit      ; Send the character to serial
+Again:			Clr A  	
+			Movc A,@A+DPTR  		; Get data into Acc
+			Acall HandleControlChar  	; Handle control characters
+			Acall Transmit      	 	; Send the character to serial
 
 			Inc DPTR
-            Djnz R3,Again		;Finished displaying one row of ascii values
+           		 Djnz R3,Again			;Finished displaying one row of ascii values
 ; At this point, all ascii values are displayed		
 			Mov R0,DPH			; save DPTR high nibble
 			Mov R1,DPL			; save DPTR low nibble
 			Acall NewLine
-			Jz EndHere 		  ; If equal goto EndHere
+			Jz EndHere 		  	; If equal goto EndHere
 ;--------------------- End of displaying ASCII Values  ---------------------------					
 ;--------------- End of displaying one row of hex and ASCII values --------------
 
@@ -113,9 +113,9 @@ Again:		Clr A
 ; At this point, the next address is displayed - no hex values yet
 
 ;---------------------- Display next row hex and ASCII values --------------------
-PointNext:  Inc R4
-            Cjne R4,#0Ah,DisplayOneRow		; goto Reload to display next row of data - 0Bh for 10 rows of data
-            Sjmp EndHere
+PointNext:  		Inc R4
+            		Cjne R4,#0Ah,DisplayOneRow	; goto Reload to display next row of data - 0Bh for 10 rows of data
+            		Sjmp EndHere
 ;--------------------- End of displaying hex and ASCII values --------------------           
 EndHere:    
 			Ljmp endLoop
@@ -195,16 +195,16 @@ DisplayNextAddress:
 			Mov DPL,R1		 ; Restore DPTR low nibble
 			
 			Mov A,DPH        ; get High Byte of start address
-            Acall Hex2Ascii
-            Acall DispAddr
+            		Acall Hex2Ascii
+            		Acall DispAddr
               
-            Mov A,DPL
-            Add A,#10h
-            Mov R2,A          ;update R2
+           		 Mov A,DPL
+            		Add A,#10h
+           		 Mov R2,A          ;update R2
 					
-            Acall Hex2Ascii
-            Acall DispAddr
-            Acall AddColon
+            		Acall Hex2Ascii
+            		Acall DispAddr
+            		Acall AddColon
 			Ret
 ;====================== End of displaying next address ============================  
 ;==================================================================================
@@ -215,28 +215,28 @@ DisplayNextAddress:
 ;==================================================================================
 ConvertData2Hex:
 			Mov R1,#20h         	;Restore address array in data memory
-			Mov R7,#00h				;Counter for rows   
-            Mov 40h, #0Ah			;Counter for row checking - 0Ah (10) rows
+			Mov R7,#00h		;Counter for rows   
+            		Mov 40h, #0Ah		;Counter for row checking - 0Ah (10) rows
 			
-            Mov A,@R1
-            Acall CheckHighNibble   ;Check high nibble
-            Inc R1
-            Mov A,@R1
-            Acall CheckLowNibble	;Check low nibble
-            Inc R1
-            Mov DPH, A
-            Acall Hex2Ascii
-            Acall DispAddr
+           	 	Mov A,@R1
+            		Acall CheckHighNibble   ;Check high nibble
+            		Inc R1
+            		Mov A,@R1
+            		Acall CheckLowNibble	;Check low nibble
+            		Inc R1
+            		Mov DPH, A
+            		Acall Hex2Ascii
+            		Acall DispAddr
             
-            Mov A,@R1
-            Acall CheckHighNibble    
-            Inc R1
-            Mov A,@R1
-            Acall CheckLowNibble
-            Mov DPL, A
-            Acall Hex2Ascii
-            Acall DispAddr
-            Acall AddColon
+            		Mov A,@R1
+            		Acall CheckHighNibble    
+            		Inc R1
+            		Mov A,@R1
+            		Acall CheckLowNibble
+            		Mov DPL, A
+           		Acall Hex2Ascii
+            		Acall DispAddr
+            		Acall AddColon
 			Ret
 ;========================================================================================
 
@@ -246,19 +246,19 @@ ConvertData2Hex:
 ;======================================================================================== 
 printAddress:
 			Mov R1,#20h             ;Address of array in data memory - store user input address
-            Mov R7,#00h             ;Initialize counter - use to check no. of user inputs
+            		Mov R7,#00h             ;Initialize counter - use to check no. of user inputs
             
-HereAgain:  Acall getCharacter		;Get character
-            Acall Echo				;Display user input
-            Mov @R1,A               ;store input into data memory (20h)          
+HereAgain:  		Acall getCharacter	;Get character
+            		Acall Echo		;Display user input
+            		Mov @R1,A               ;store input into data memory (20h)          
   
-            Inc R7                  ;Inc counter
-            Inc R1                  ;Points to next location in data memory
-            Cjne R7,#04h,HereAgain  ;Limit to 4 inputs  
-            Acall Erase
-            Acall Erase
-            Acall Erase
-            Acall Erase             ;Four erase operations required
+            		Inc R7                  ;Inc counter
+            		Inc R1                  ;Points to next location in data memory
+            		Cjne R7,#04h,HereAgain  ;Limit to 4 inputs  
+            		Acall Erase
+            		Acall Erase
+            		Acall Erase
+            		Acall Erase             ;Four erase operations required
 			Ret
 ;========================================================================================
 
@@ -446,12 +446,12 @@ printDone:
 ;========================================================================================
 Hex2Ascii:  
 			Mov B,A
-            Anl A,#0Fh        		; mask upper nibble - work out lower nibble first				
-            Acall Hex2AsciiLow    	; Convert lower nibble hex to ASCII
+            		Anl A,#0Fh        		; mask upper nibble - work out lower nibble first				
+           		 Acall Hex2AsciiLow    		; Convert lower nibble hex to ASCII
 			Mov A,B           		; get data into Acc
-            Anl A,#0F0h       		; mask lower nibble 			
-            Acall Hex2AsciiHigh	  	; Convert upper nibble hex to ASCII	
-            Ret
+            		Anl A,#0F0h       		; mask lower nibble 			
+            		Acall Hex2AsciiHigh	  	; Convert upper nibble hex to ASCII	
+            		Ret
 ;============================== End of Hex to Ascii =====================================
 
 ;========================================================================================
@@ -460,34 +460,34 @@ Hex2Ascii:
 Hex2AsciiLow:		
 			Cjne A,#0Ah,NotEqual			
 ; ------------ Data equal or greater goes here ------------
-NotEqual:	Jc LessThan
-            Add A,#37h		  ; Add 37h if range Ah->Fh
-            Mov R6,A          ; send it to R6
-            Sjmp StopCon
+NotEqual:		Jc LessThan
+            		Add A,#37h		  ; Add 37h if range Ah->Fh
+            		Mov R6,A          ; send it to R6
+            		Sjmp StopCon
 ; --------------- Data less than goes here ----------------
-LessThan:	Add A,#30h		  ; Add 30h if range 0h->9h
-            Mov R6,A          ; send it to R6			
-StopCon:	Ret
+LessThan:		Add A,#30h		  ; Add 30h if range 0h->9h
+            		Mov R6,A          ; send it to R6			
+StopCon:		Ret
 
 Hex2AsciiHigh:		
 			Cjne A,#0A0h,NotSame	
 ; ------------ Data equal or greater goes here ------------
-NotSame:	Jc Smaller
-            RR A
-            RR A
-            RR A
-            RR A
-            Add A,#37h
-            Mov R5,A          ; send it to R5
-            Sjmp Stop
+NotSame:		Jc Smaller
+           		RR A
+            		RR A
+            		RR A
+            		RR A
+            		Add A,#37h
+            		Mov R5,A          ; send it to R5
+            		Sjmp Stop
 ; ---------------- Data less than goes here -----------------
-Smaller:	RR A
-            RR A
-            RR A
-            RR A
-            Add A,#30h
-            Mov R5,A          ; send it to R5
-Stop:		Ret
+Smaller:		RR A
+           		RR A
+            		RR A
+            		RR A
+            		Add A,#30h
+            		Mov R5,A          ; send it to R5
+Stop:			Ret
 ;======================== End of Converting High and Low Byte ===========================
 
 ;========================================================================================
@@ -518,11 +518,11 @@ ReturnNormal:
 ;========================================================================================
 DispAddr:   
 			Setb TR1			   ;Start timer
-            Mov A,R5
-            Call Transmit
-            Mov A,R6
-            Call Transmit
-            Ret
+            		Mov A,R5
+            		Call Transmit
+            		Mov A,R6
+            		Call Transmit
+            		Ret
 ;========================================================================================
 
 ;========================================================================================
@@ -530,13 +530,13 @@ DispAddr:
 ;========================================================================================
 DispChar:   
 			Setb TR1			   ;Start timer
-            Mov A,R5
-            ACall Transmit
-            Mov A,R6
-            ACall Transmit
-            Mov A,#" "
-		    ACall Transmit
-            Ret
+            		Mov A,R5
+            		ACall Transmit
+            		Mov A,R6
+            		ACall Transmit
+            		Mov A,#" "
+		   	ACall Transmit
+            		Ret
 ;========================================================================================
 
 ;========================================================================================
@@ -544,19 +544,19 @@ DispChar:
 ;========================================================================================
 AddColon:   
 			Mov A,#":"
-		    ACall Transmit
-            Mov A,#" "
-		    ACall Transmit
-            Ret
+		   	ACall Transmit
+            		Mov A,#" "
+		    	ACall Transmit
+            		Ret
 ;========================================================================================
 
 ;================================ Serial Transmission ===================================
 Transmit:   
 			Clr TI            	; clear the tx  buffer full flag.
-			Mov SBUF,A		    ;Send contents of A
-Here:   	Jnb TI, Here		;wait for last bit
-            Clr TI				;clear T1 for next char	
-            Ret
+			Mov SBUF,A		;Send contents of A
+Here:   		Jnb TI, Here		;wait for last bit
+            		Clr TI			;clear T1 for next char	
+            		Ret
 ;========================================================================================
 
 ;========================================================================================
@@ -565,14 +565,14 @@ Here:   	Jnb TI, Here		;wait for last bit
 ; To erase a character you need to do Backspace-Space-Backspace
 Erase:      
 			Push Acc
-            Mov	A,#08h      ;backspace
-            Acall Transmit
-            Mov	A,#20h      ;space
-            Acall Transmit
-            Mov	A,#08h      ;backspace
-            Acall Transmit
-            Pop	Acc         
-            Ret   
+            		Mov	A,#08h      ;backspace
+            		Acall Transmit
+            		Mov	A,#20h      ;space
+            		Acall Transmit
+            		Mov	A,#08h      ;backspace
+            		Acall Transmit
+            		Pop	Acc         
+            		Ret   
 ;========================================================================================
 
 ;========================================================================================
@@ -580,10 +580,10 @@ Erase:
 ;========================================================================================
 Echo:       
 			Setb TR1          ;Timer1 start or stop bit.
-            Mov SBUF,A        ;Display recieved data (echo)
-Wait:      	Jnb TI,Wait       ;Stay here till data is transmitted - Transmit Interrupt (TI) flag set
-            Clr TI            ;Clear TI flag and wait for next data
-            Ret
+            		Mov SBUF,A        ;Display recieved data (echo)
+Wait:      		Jnb TI,Wait       ;Stay here till data is transmitted - Transmit Interrupt (TI) flag set
+            		Clr TI            ;Clear TI flag and wait for next data
+            		Ret
 ;========================================================================================
 
 ;========================================================================================
@@ -591,12 +591,12 @@ Wait:      	Jnb TI,Wait       ;Stay here till data is transmitted - Transmit Int
 ;========================================================================================
 Newline:    
 			Push	Acc
-            Mov	A,#0Dh      ;carriage return
-            Acall Transmit
-            Mov	A,#0Ah      ;line feed
-            Acall Transmit
-            Pop	Acc         ;Need both carriage return and line feed to get to new line
-            Ret   
+            		Mov	A,#0Dh      ;carriage return
+            		Acall Transmit
+            		Mov	A,#0Ah      ;line feed
+            		Acall Transmit
+            		Pop	Acc         ;Need both carriage return and line feed to get to new line
+           		Ret   
 ;========================================================================================
 
 ;========================================================================================
@@ -604,13 +604,13 @@ Newline:
 ;========================================================================================
 PrnAdd:     
 			Mov B,A
-            Anl A,#0Fh        ; mask upper nibble - work out lower nibble first				
-            Acall Hex2AsciiLow      ; Convert lower nibble hex to ASCII
-HighNib:	Mov A,B           ; get data into Acc
-            Anl A,#0F0h       ; mask lower nibble 			
-            Acall Hex2AsciiHigh	  	  ; Convert upper nibble hex to ASCII	
-DispAddChar:Acall DispAddr
-            Ret
+            		Anl A,#0Fh        	; mask upper nibble - work out lower nibble first				
+            		Acall Hex2AsciiLow      ; Convert lower nibble hex to ASCII
+HighNib:		Mov A,B           	; get data into Acc
+            		Anl A,#0F0h       	; mask lower nibble 			
+            		Acall Hex2AsciiHigh	; Convert upper nibble hex to ASCII	
+DispAddChar:		Acall DispAddr
+            		Ret
 ;=========================================================================================
 
 ;=============================== Convert High and Low Nibble =============================
@@ -620,12 +620,12 @@ DispAddChar:Acall DispAddr
 CheckHighNibble:   
 			Cjne A,#40h,Less		
 ; Data equal then code goes here
-Less:       Jc Greater
-            Acall A2FhConH
-            Sjmp HaltHi
+Less:       		Jc Greater
+            		Acall A2FhConH
+            		Sjmp HaltHi
 ; Less than code goes here 
-Greater:	Acall Zero29ConH
-HaltHi:		Ret 
+Greater:		Acall Zero29ConH
+HaltHi:			Ret 
 ;=========================================================================================
 
 ;=========================================================================================
@@ -634,12 +634,12 @@ HaltHi:		Ret
 CheckLowNibble:   
 			Cjne A,#40h,NotMore		
 ; Data equal, then code goes here
-NotMore:    Jc Bigger
-            Acall A2FhConL
-            Sjmp HaltLo 
+NotMore:    		Jc Bigger
+            		Acall A2FhConL
+            		Sjmp HaltLo 
 ; less than, code goes here 
-Bigger:	    Acall Zero29ConL
-HaltLo:		Ret 
+Bigger:	    		Acall Zero29ConL
+HaltLo:			Ret 
 ;=========================================================================================
 
 ;=========================================================================================
@@ -647,38 +647,38 @@ HaltLo:		Ret
 ;=========================================================================================
 Zero29ConH: 
 			Anl A,#0Fh        ;0-9 - mask upper nibble 
-            RL A
-            RL A
-            RL A
-            RL A
-            Mov R2,A
-            Ret
+            		RL A
+            		RL A
+            		RL A
+            		RL A
+            		Mov R2,A
+            		Ret
 ;=========================================================================================
 
 ;=========================================================================================
 ;Convert 0 to 9 to hex - low nibble subroutine
 ;=========================================================================================
 Zero29ConL: 
-			Mov A,@R1         ;0-9 - mask lower nibble
-            Anl A,#0Fh        ;mask upper nibble - work out lower nibble 
-            Add A,R2
-            Ret
+	   		Mov A,@R1         ;0-9 - mask lower nibble
+            		Anl A,#0Fh        ;mask upper nibble - work out lower nibble 
+            		Add A,R2
+            		Ret
 ;Convert A to F to hex - high nibble        
 A2FhConH:   
-			Clr C			  ;A-F - convert upper nibble
-            Subb A,#41h
-            Mov A,@R1
-            Jc Skip
-            Clr C
-            Subb A,#07h
-Skip:       Clr C
-            Subb A,#30h
-            RL A
-            RL A
-            RL A
-            RL A
-            Mov R2,A
-            Ret
+	    		Clr C			  ;A-F - convert upper nibble
+            		Subb A,#41h
+           	 	Mov A,@R1
+            		Jc Skip
+            		Clr C
+            		Subb A,#07h
+Skip:       		Clr C
+            		Subb A,#30h
+            		RL A
+            		RL A
+            		RL A
+            		RL A
+            		Mov R2,A
+            		Ret
 ;=========================================================================================
 
 ;=========================================================================================
@@ -686,27 +686,27 @@ Skip:       Clr C
 ;=========================================================================================
 A2FhConL:   
 			Clr C			  ;A-F - convert lower nibble
-            Subb A,#41h
-            Mov A,@R1
-            Jc Skip2
-            Clr C
-            Subb A,#07h
-Skip2:      Clr C
-            Subb A,#30h
-            Anl A,#0Fh
-            Add A,R2
-            Ret
+            		Subb A,#41h
+            		Mov A,@R1
+            		Jc Skip2
+            		Clr C
+            		Subb A,#07h
+Skip2:      		Clr C
+            		Subb A,#30h
+            		Anl A,#0Fh
+            		Add A,R2
+            		Ret
 ;=========================================================================================
 
 			Org 0300h
-LUT:        DB 0x0A, 0x0D, "Address: ", 0x0A, 0x0D, 0x00 ;0x0A - Line Feed 0x0D - Carriage Return
+LUT:        		DB 0x0A, 0x0D, "Address: ", 0x0A, 0x0D, 0x00 ;0x0A - Line Feed 0x0D - Carriage Return
 
 ;=========================================================================================
 ; Test program is here 	
 ;=========================================================================================
 			Org 3000h
-myProg:		Lcall printString
+myProg:			Lcall printString
 			DB "My program starts here", 0x0A, 0x0D, 0x00
 			Ljmp endLoop
 ;=========================================================================================
-		    End
+		    	End
