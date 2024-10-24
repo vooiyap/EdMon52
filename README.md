@@ -7,12 +7,8 @@
  This version has following commands:
  
  G - go command 
- 
  M - display Memory command
- 
  R - display Registers
-
- ** Remove binasc subroutine - replace it with Hex2Ascii in printHex subroutine
  
  *Acknowledgement* - Subroutines with an asterisk '*' is adapted from MINMON - The Minimal 8051 Monitor Program by Steven B. Leeb
  Massachusetts Institute of Technology. 
