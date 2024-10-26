@@ -1,5 +1,5 @@
- 'EdMon52' is an educational monitor program written for the AT89S52 for educational purposes. It is written using Keil uVision IDE.
- EdMon52 is inspired by MINMON - The Minimal 8051 Monitor Program by Steven B. Leeb
+ EdMon52 is an educational monitor program written for the AT89S52 for educational purposes. It is written using Keil uVision IDE.
+ EdMon52 is inspired by **MINMON - The Minimal 8051 Monitor Program by Steven B. Leeb**
  
  This version of EdMon52 has the following commands:   
  G - go command   
