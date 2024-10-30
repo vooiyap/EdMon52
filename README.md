@@ -5,6 +5,7 @@
  G - go command   
  M - display Memory command   
  R - display Registers   
+ R:- display Registers command - display contents of registers R0 - R7  
  
  *Acknowledgement* - Subroutines marked with an asterisk (*) are adapted from MINMON - The Minimal 8051 Monitor Program by Steven B. Leeb, Massachusetts Institute of Technology.  
  See link: http://ee6115.mit.edu/page/8051-r31jp-info.html
