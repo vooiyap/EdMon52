@@ -101,8 +101,8 @@ getAnotherInput:
 		Mov A,#" "
 		Lcall sendCharacter	
 		
-		Lcall getByte       ; get byte 	
-		Movx @DPTR, A       ; Store the value at the specified address
+		Lcall getByte       	; get byte 	
+		Movx @DPTR, A       	; Store the value at the specified address
 		Push  Acc          	; push MSB of jump address
 		Lcall printHex		
 		
@@ -116,19 +116,19 @@ getAnotherInput:
 ; Steven B. Leeb, Massachusetts Institute of Technology
 ;========================================================================================
 goCommand:	
-			Mov A,#" "
-			Acall sendCharacter
-			Acall getByte          ; get address high byte
-			Mov   R7, A            ; save high byte of address in R7
-			Acall printHex         ; display the high byte for debugging
-			Acall getByte          ; get address low byte
-			Push  Acc              ; push LSB of jump address
-			Acall printHex         ; display the low byte for debugging
-			Acall CRLF
-			Mov   A, R7            ; recall high byte of address
-			Push  Acc              ; push MSB of jump address
+		Mov A,#" "
+		Acall sendCharacter
+		Acall getByte          ; get address high byte
+		Mov   R7, A            ; save high byte of address in R7
+		Acall printHex         ; display the high byte for debugging
+		Acall getByte          ; get address low byte
+		Push  Acc              ; push LSB of jump address
+		Acall printHex         ; display the low byte for debugging
+		Acall CRLF
+		Mov   A, R7            ; recall high byte of address
+		Push  Acc              ; push MSB of jump address
 
-			Ret                    ; use RET to jump to the address pushed on the stack
+		Ret                    ; use RET to jump to the address pushed on the stack
 ;================================ End of Go command =====================================
 
 ;========================================================================================
@@ -136,26 +136,26 @@ goCommand:
 ; This routine display the hex and ASCII values of memory locations.
 ;========================================================================================
 displayMemory:      
-			Acall printString
-			db 0Dh, 0Ah,"Address: ", 0Dh, 0Ah, 0h
-Begin:      Acall printAddress
-			Acall convertData2Hex
+		Acall printString
+		db 0Dh, 0Ah,"Address: ", 0Dh, 0Ah, 0h
+Begin:      	Acall printAddress
+		Acall convertData2Hex
 
 ;--------------- The following will display one row of 16 hex values -----------------
 displayOneRow:     
-			Mov R3,#10h		  ; R3 is used as a counter to check number of data
+		Mov R3,#10h		; R3 is used as a counter to check number of data
 
-			Mov R0,DPH		  ; Save DPTR high nibble
-			Mov R1,DPL		  ; Save DPTR low nibble
+		Mov R0,DPH		; Save DPTR high nibble
+		Mov R1,DPL		; Save DPTR low nibble
 			
 Back:		Clr A      
-			Movc A,@A+DPTR    ; get data into Acc
+		Movc A,@A+DPTR    	; get data into Acc
 
-            Acall Hex2Ascii
-            Acall DispChar
+            	Acall Hex2Ascii
+            	Acall DispChar
 			
-            Inc DPTR		  ; point to next data
-            Djnz R3,Back 	  ; Do it again if it is not equal 10h
+            	Inc DPTR		; point to next data
+            	Djnz R3,Back 	  	; Do it again if it is not equal 10h
 ; At this point address and one row of hex values are displayed	
 ;------------------- End of displaying one row of hex values ------------------------
 
