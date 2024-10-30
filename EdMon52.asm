@@ -14,44 +14,44 @@
 ; http://ee6115.mit.edu/page/8051-r31jp-info.html
 ; vvy - 28/10/2024 @17:23
 ;=================================================================================
-Stack  		EQU 	2Fh       	  ; bottom of stack - stack starts at 30h
-errorFlag 	EQU 	0         	  ; bit 0 is error status
+Stack  		EQU 	2Fh       ; bottom of stack - stack starts at 30h
+errorFlag 	EQU 	0         ; bit 0 is error status
 
-			Org 00h           ; power up and reset vector
-			Ljmp Start
+		Org 00h           ; power up and reset vector
+		Ljmp Start
 
 ;=================================================================================
 ; Main program starts here
 ;=================================================================================
-			Org     2000h		   ; Start address less than 0400h, program
-Start:						   	   ; stalls at 2nd row of data displayed. 
-			Mov     SP,#Stack      ; Initialize stack pointer
-			Clr     EA             ; disable interrupts
-			Acall   initSerial     ; initialize hardware
+		Org     2000h		; Start address less than 0400h, program
+Start:					; stalls at 2nd row of data displayed. 
+		Mov     SP,#Stack      	; Initialize stack pointer
+		Clr     EA             	; disable interrupts
+		Acall   initSerial     	; initialize hardware
 			
-			Acall   printString    ; print welcome message
-			db "EdMon52", 0h
+		Acall   printString    	; print welcome message
+		db "EdMon52", 0h
 			
 monitorLoop:
-			Clr     EA               ; disable all interrupts
-			Clr     errorFlag        ; clear the error flag
-			Acall   printString      ; print prompt
-			db 0Dh, 0Ah,">", 0h
-			Clr     RI               ; flush the serial input buffer
-			Acall   getCommand       ; read the single-letter command
-			Mov     R2, A            ; put the command number in R2
-			Ljmp    commandSelector  ; branch to a monitor routine
+		Clr     EA               ; disable all interrupts
+		Clr     errorFlag        ; clear the error flag
+		Acall   printString      ; print prompt
+		db 0Dh, 0Ah,">", 0h
+		Clr     RI               ; flush the serial input buffer
+		Acall   getCommand       ; read the single-letter command
+		Mov     R2, A            ; put the command number in R2
+		Ljmp    commandSelector  ; branch to a monitor routine
 endLoop:                 	         ; come here after command has finished
-			Ajmp 	monitorLoop      ; loop forever in monitor loop
+		Ajmp 	monitorLoop      ; loop forever in monitor loop
 
 ;=================================================================================
 ; Monitor jump table
 ;=================================================================================
 jumpTable:
-			dw changeMemory		 ; command 'c' -> index 0
-			dw goCommand         ; command 'g' -> index 1
-			dw DisplayMemory     ; command 'm' -> index 2
-			dw rCommand          ; command 'r' -> index 3
+		dw changeMemory		; command 'c' -> index 0
+		dw goCommand         	; command 'g' -> index 1
+		dw DisplayMemory     	; command 'm' -> index 2
+		dw rCommand          	; command 'r' -> index 3
 	
 ;*********************************************************************************
 ; Monitor command routines                                                       *
@@ -65,30 +65,30 @@ changeMemory:
 		Mov A,#" "
 		Lcall sendCharacter
 		
-		Lcall getByte        ; get address high byte
-		Mov   R7, A         ; save in R7
-		Mov 40h, A			; save in Acc for display purposes
+		Lcall getByte      	; get address high byte
+		Mov   R7, A         	; save in R7
+		Mov 40h, A		; save in Acc for display purposes
 
-		Lcall getByte        ; get address low byte
-		Push  Acc           ; push LSB of address
-		Mov 41h, A			; save in Acc for display purposes
+		Lcall getByte        	; get address low byte
+		Push  Acc           	; push LSB of address
+		Mov 41h, A		; save in Acc for display purposes
 
 		Lcall CRLF
-		Mov   A, R7         ; recall address high byte
+		Mov   A, R7         	; recall address high byte
 		Push  Acc          	; push MSB of jump address
-		Mov DPH,40h			; Restore DPTR high nibble
+		Mov DPH,40h		; Restore DPTR high nibble
 		Lcall printHex
-		Mov DPL,41h			; Restore DPTR low nibble
+		Mov DPL,41h		; Restore DPTR low nibble
 		Mov A, 41h
 		Lcall printHex
 
 		Mov A,#" "
 		Lcall sendCharacter			
 		
-		Lcall getByte        ; get byte 
-		Mov DPH,40h			; Restore DPTR high nibble
-		Mov DPL,41h			; Restore DPTR low nibble
-		Movx @DPTR, A       ; Store the value at the specified address
+		Lcall getByte        	; get byte 
+		Mov DPH,40h		; Restore DPTR high nibble
+		Mov DPL,41h		; Restore DPTR low nibble
+		Movx @DPTR, A       	; Store the value at the specified address
 		Push  Acc          	; push MSB of jump address
 		Lcall printHex		
 getAnotherInput:
@@ -102,8 +102,8 @@ getAnotherInput:
 		Mov A,#" "
 		Lcall sendCharacter	
 		
-		Lcall getByte        ; get byte 	
-		Movx @DPTR, A       ; Store the value at the specified address
+		Lcall getByte        	; get byte 	
+		Movx @DPTR, A       	; Store the value at the specified address
 		Push  Acc          	; push MSB of jump address
 		Lcall printHex		
 		
@@ -115,19 +115,19 @@ getAnotherInput:
 ; This routine branches to the 4 hex digit address following 'G'                  
 ;==================================================================================
 goCommand:	
-			Mov A,#" "
-			Acall sendCharacter
-			Acall getByte          ; get address high byte
-			Mov   R7, A            ; save high byte of address in R7
-			Acall printHex         ; display the high byte for debugging
-			Acall getByte          ; get address low byte
-			Push  Acc              ; push LSB of jump address
-			Acall printHex         ; display the low byte for debugging
-			Acall CRLF
-			Mov   A, R7            ; recall high byte of address
-			Push  Acc              ; push MSB of jump address
+		Mov A,#" "
+		Acall sendCharacter
+		Acall getByte          ; get address high byte
+		Mov   R7, A            ; save high byte of address in R7
+		Acall printHex         ; display the high byte for debugging
+		Acall getByte          ; get address low byte
+		Push  Acc              ; push LSB of jump address
+		Acall printHex         ; display the low byte for debugging
+		Acall CRLF
+		Mov   A, R7            ; recall high byte of address
+		Push  Acc              ; push MSB of jump address
 
-			Ret                    ; use RET to jump to the address pushed on the stack
+		Ret                    ; use RET to jump to the address pushed on the stack
 ;============================== End of Go command ==================================
 		
 ;=================================================================================
@@ -135,65 +135,65 @@ goCommand:
 ; This routine display the hex and ASCII values of memory locations.
 ;=================================================================================
 DisplayMemory:      
-			Acall printString
-			db 0Dh, 0Ah,"Address: ", 0Dh, 0Ah, 0h
-Begin:      Acall printAddress
-			Acall ConvertData2Hex
+		Acall printString
+		db 0Dh, 0Ah,"Address: ", 0Dh, 0Ah, 0h
+Begin:      	Acall printAddress
+		Acall ConvertData2Hex
 
 ;--------------- The following will display one row of 16 hex values -----------------
 DisplayOneRow:     
-			Mov R3,#10h		  ; R3 is used as a counter to check number of data
+		Mov R3,#10h		  ; R3 is used as a counter to check number of data
 
-			Mov R0,DPH		  ; Save DPTR high nibble
-			Mov R1,DPL		  ; Save DPTR low nibble
+		Mov R0,DPH		  ; Save DPTR high nibble
+		Mov R1,DPL		  ; Save DPTR low nibble
 			
 Back:		Clr A      
-			Movc A,@A+DPTR    ; get data into Acc
+		Movc A,@A+DPTR    	; get data into Acc
 
-            Acall Hex2Ascii
-            Acall DispChar
+            	Acall Hex2Ascii
+            	Acall DispChar
 			
-            Inc DPTR		  ; point to next data
-            Djnz R3,Back 	  ; Do it again if it is not equal 10h
+            	Inc DPTR		; point to next data
+            	Djnz R3,Back 	  	; Do it again if it is not equal 10h
 ; At this point address and one row of hex values are displayed	
 ;------------------- End of displaying one row of hex values ------------------------
 
 ;--------------- The following will display one row of ASCII values -----------------
 DispAscii:	
-			Mov R3,#10h			; Counter to check no. of data (16 data)
-			Mov DPH,R0			; Restore DPTR high nibble
-			Mov DPL,R1			; Restore DPTR low nibble
+		Mov R3,#10h			; Counter to check no. of data (16 data)
+		Mov DPH,R0			; Restore DPTR high nibble
+		Mov DPL,R1			; Restore DPTR low nibble
 ;*Note* - DPH and DPL is a pointer to the address location - high and low byte
 Again:		Clr A  	
-			Movc A,@A+DPTR  	; Get data into Acc
-			Acall HandleControlChar  ; Handle control characters
-			Acall Transmit      ; Send the character to serial
+		Movc A,@A+DPTR  		; Get data into Acc
+		Acall HandleControlChar  	; Handle control characters
+		Acall Transmit      		; Send the character to serial
 
-			Inc DPTR
-            Djnz R3,Again		;Finished displaying one row of ascii values
+		Inc DPTR
+            	Djnz R3,Again			;Finished displaying one row of ascii values
 ; At this point, all ascii values are displayed		
-			Mov R0,DPH			; save DPTR high nibble
-			Mov R1,DPL			; save DPTR low nibble
-			Acall NewLine
-			Jz EndHere 		  ; If equal goto EndHere
+		Mov R0,DPH			; save DPTR high nibble
+		Mov R1,DPL			; save DPTR low nibble
+		Acall NewLine
+		Jz EndHere 		  	; If equal goto EndHere
 ;--------------------- End of displaying ASCII Values  ---------------------------					
 ;--------------- End of displaying one row of hex and ASCII values --------------
 
 ;-------- Check for the no. of rows being displayed - stop at 10 rows ------------
-			Dec 40h
-			Mov A, 40h
-			Jz EndHere
+		Dec 40h
+		Mov A, 40h
+		Jz EndHere
 ;------------------------------ End row checking ---------------------------------
-			Acall DisplayNextAddress
+		Acall DisplayNextAddress
 ; At this point, the next address is displayed - no hex values yet
 
 ;---------------------- Display next row hex and ASCII values --------------------
-PointNext:  Inc R4
-            Cjne R4,#0Ah,DisplayOneRow		; goto Reload to display next row of data - 0Bh for 10 rows of data
-            Sjmp EndHere
+PointNext:  	Inc R4
+            	Cjne R4,#0Ah,DisplayOneRow		; goto Reload to display next row of data - 0Bh for 10 rows of data
+            	Sjmp EndHere
 ;--------------------- End of displaying hex and ASCII values --------------------           
 EndHere:    
-			Ljmp endLoop
+		Ljmp endLoop
 ;======================== Display Memory command ends here =======================
 	
 ;===================================================================================
@@ -201,27 +201,27 @@ EndHere:
 ; This routine display contents of the registers
 ;===================================================================================
 rCommand:				
-			Acall printString
-			db 0Dh, 0Ah, 0h
-			Clr RS0
-			SetB RS1                 ; Select bank 2 to access R0-R7
+		Acall printString
+		db 0Dh, 0Ah, 0h
+		Clr RS0
+		SetB RS1                 ; Select bank 2 to access R0-R7
 StartLoc:   
-			Mov R0,#00h              ; Get R0 address
+		Mov R0,#00h              ; Get R0 address
 Renew:      
-			Mov R3,#08h              ; Loop through R0-R7
+		Mov R3,#08h              ; Loop through R0-R7
 Return:		
-			Clr A      
-			Mov A,@R0                ; Get register value into Acc
-			Acall Hex2Ascii
-			Acall DispChar
+		Clr A      
+		Mov A,@R0                ; Get register value into Acc
+		Acall Hex2Ascii
+		Acall DispChar
 			
-			Inc R0
-			Djnz R3,Return
-			Acall CRLF
+		Inc R0
+		Djnz R3,Return
+		Acall CRLF
 			
-			Clr RS0
-			Clr RS1
-			Ljmp endLoop
+		Clr RS0
+		Clr RS1
+		Ljmp endLoop
 
 ;**********************************************************************************
 ; Monitor support subroutines
@@ -233,11 +233,11 @@ Return:
 ; use timer 1 for 9600 baud serial communications
 ;==================================================================================
 initSerial:
-			Mov   TMOD, #20h       	; set timer 1 for auto reload - mode 2
-			Mov   TCON, #41h       	; run counter 1 and set edge trig ints
-			Mov   TH1,  #0FDh      	; set 9600 baud with xtal=11.059mhz
-			Mov   SCON, #50h       	; set serial control reg for 8-bit data and mode 1
-			Ret
+		Mov   TMOD, #20h       	; set timer 1 for auto reload - mode 2
+		Mov   TCON, #41h       	; run counter 1 and set edge trig ints
+		Mov   TH1,  #0FDh      	; set 9600 baud with xtal=11.059mhz
+		Mov   SCON, #50h       	; set serial control reg for 8-bit data and mode 1
+		Ret
 ;========================== End initSerial subroutine =============================
 		
 ;==================================================================================
@@ -246,21 +246,21 @@ initSerial:
 ; keyed onto terminal. 
 ;==================================================================================
 DisplayNextAddress:
-			Mov DPH,R0		 ; Restore DPTR high nibble
-			Mov DPL,R1		 ; Restore DPTR low nibble
+		Mov DPH,R0		 ; Restore DPTR high nibble
+		Mov DPL,R1		 ; Restore DPTR low nibble
 			
-			Mov A,DPH        ; get High Byte of start address
-            Acall Hex2Ascii
-            Acall DispAddr
+		Mov A,DPH        ; get High Byte of start address
+            	Acall Hex2Ascii
+            	Acall DispAddr
               
-            Mov A,DPL
-            Add A,#10h
-            Mov R2,A          ;update R2
+            	Mov A,DPL
+            	Add A,#10h
+            	Mov R2,A          ;update R2
 					
-            Acall Hex2Ascii
-            Acall DispAddr
-            Acall AddColon
-			Ret
+            	Acall Hex2Ascii
+            	Acall DispAddr
+            	Acall AddColon
+		Ret
 ;====================== End of displaying next address ============================  
 ;==================================================================================
 ; Convert data to hex address suroutine - used by the M command
@@ -269,30 +269,30 @@ DisplayNextAddress:
 ; It uses R7 as a counter.
 ;==================================================================================
 ConvertData2Hex:
-			Mov R1,#20h         	;Restore address array in data memory
-			Mov R7,#00h				;Counter for rows   
-            Mov 40h, #0Ah			;Counter for row checking - 0Ah (10) rows
+		Mov R1,#20h         	;Restore address array in data memory
+		Mov R7,#00h		;Counter for rows   
+            	Mov 40h, #0Ah		;Counter for row checking - 0Ah (10) rows
 			
-            Mov A,@R1
-            Acall CheckHighNibble   ;Check high nibble
-            Inc R1
-            Mov A,@R1
-            Acall CheckLowNibble	;Check low nibble
-            Inc R1
-            Mov DPH, A
-            Acall Hex2Ascii
-            Acall DispAddr
+            	Mov A,@R1
+            	Acall CheckHighNibble   ;Check high nibble
+            	Inc R1
+            	Mov A,@R1
+            	Acall CheckLowNibble	;Check low nibble
+            	Inc R1
+            	Mov DPH, A
+            	Acall Hex2Ascii
+            	Acall DispAddr
             
-            Mov A,@R1
-            Acall CheckHighNibble    
-            Inc R1
-            Mov A,@R1
-            Acall CheckLowNibble
-            Mov DPL, A
-            Acall Hex2Ascii
-            Acall DispAddr
-            Acall AddColon
-			Ret
+           	Mov A,@R1
+            	Acall CheckHighNibble    
+            	Inc R1
+            	Mov A,@R1
+            	Acall CheckLowNibble
+            	Mov DPL, A
+            	Acall Hex2Ascii
+            	Acall DispAddr
+            	Acall AddColon
+		Ret
 ;========================================================================================
 
 ;========================================================================================
@@ -300,106 +300,106 @@ ConvertData2Hex:
 ; This routine print hex address - used by the M command
 ;======================================================================================== 
 printAddress:
-			Mov R1,#20h             ;Address of array in data memory - store user input address
-            Mov R7,#00h             ;Initialize counter - use to check no. of user inputs
+		Mov R1,#20h             ;Address of array in data memory - store user input address
+            	Mov R7,#00h             ;Initialize counter - use to check no. of user inputs
             
-HereAgain:  Acall getCharacter		;Get character
-            Acall Echo				;Display user input
-            Mov @R1,A               ;store input into data memory (20h)          
+HereAgain:  	Acall getCharacter	;Get character
+            	Acall Echo		;Display user input
+            	Mov @R1,A               ;store input into data memory (20h)          
   
-            Inc R7                  ;Inc counter
-            Inc R1                  ;Points to next location in data memory
-            Cjne R7,#04h,HereAgain  ;Limit to 4 inputs  
-            Acall Erase
-            Acall Erase
-            Acall Erase
-            Acall Erase             ;Four erase operations required
-			Ret
+            	Inc R7                  ;Inc counter
+            	Inc R1                  ;Points to next location in data memory
+            	Cjne R7,#04h,HereAgain  ;Limit to 4 inputs  
+            	Acall Erase
+            	Acall Erase
+            	Acall Erase
+            	Acall Erase             ;Four erase operations required
+		Ret
 ;========================================================================================
 
 ;========================================================================================
 ; badCommand subroutine* 
 ;========================================================================================
 badCommand:
-			Lcall printString
-			db 0Dh, 0Ah," bad command ", 0h
-			Ljmp endloop
+		Lcall printString
+		db 0Dh, 0Ah," bad command ", 0h
+		Ljmp endloop
 ;========================================================================================
 ; badParameter subroutine* 
 ;========================================================================================
 badParameter:
-			Lcall printString
-			db 0Dh, 0Ah," bad parameter ", 0h
-			Ljmp endloop
+		Lcall printString
+		db 0Dh, 0Ah," bad parameter ", 0h
+		Ljmp endloop
 ;========================================================================================
 
 ;========================================================================================
 ; getCommand subroutine 
 ;========================================================================================
 getCommand:
-			Lcall getCharacter           ; Get the single-letter command from user input
-			Clr   Acc.5                  ; Convert lowercase to uppercase by clearing bit 5
-			Lcall sendCharacter          ; Echo the command
+		Lcall getCharacter           ; Get the single-letter command from user input
+		Clr   Acc.5                  ; Convert lowercase to uppercase by clearing bit 5
+		Lcall sendCharacter          ; Echo the command
 			
-			Cjne A, #'C', checkG         ; Check if command is 'C'
-			Sjmp processCCommand         ; If 'C', jump to process C command
+		Cjne A, #'C', checkG         ; Check if command is 'C'
+		Sjmp processCCommand         ; If 'C', jump to process C command
 checkG:
-			Cjne A, #'G', checkM         ; Check if command is 'G'
-			Sjmp processGCommand         ; If 'G', jump to process G command
+		Cjne A, #'G', checkM         ; Check if command is 'G'
+		Sjmp processGCommand         ; If 'G', jump to process G command
 checkM:
-			Cjne A, #'M', checkR         ; Check if command is 'M'
-			Sjmp processMCommand         ; If 'M', jump to process M command
+		Cjne A, #'M', checkR         ; Check if command is 'M'
+		Sjmp processMCommand         ; If 'M', jump to process M command
 checkR:
-			Cjne A, #'R', badParameter   ; Check if command is 'R'
-			Sjmp processRCommand         ; If 'R', jump to process R command
+		Cjne A, #'R', badParameter   ; Check if command is 'R'
+		Sjmp processRCommand         ; If 'R', jump to process R command
 			
 processCCommand:
-			Mov A, #00h                  ; Map 'C' to index 0 in the jump table
-			Sjmp storeR2
+		Mov A, #00h                  ; Map 'C' to index 0 in the jump table
+		Sjmp storeR2
 		
 processGCommand:
-			Mov A, #01h                  ; Map 'G' to index 1 in the jump table
-			Sjmp storeR2
+		Mov A, #01h                  ; Map 'G' to index 1 in the jump table
+		Sjmp storeR2
 
 processMCommand:
-			Mov A, #02h                  ; Map 'M' to index 2 in the jump table
-			Sjmp storeR2
+		Mov A, #02h                  ; Map 'M' to index 2 in the jump table
+		Sjmp storeR2
 
 processRCommand:
-			Mov A, #03h                  ; Map 'R' to index 3 in the jump table
-			Sjmp storeR2
+		Mov A, #03h                  ; Map 'R' to index 3 in the jump table
+		Sjmp storeR2
 
 storeR2:
-			Mov R2, A                    ; Store the jump table index
-			Ret
+		Mov R2, A                    ; Store the jump table index
+		Ret
 ;========================================================================================
 
 ;========================================================================================
 ; commandSelector subroutine* 
 ;========================================================================================
 commandSelector:
-			Mov   DPTR, #jumpTable ; point DPTR at beginning of jump table
-			Mov   A, R2            ; load Acc with monitor routine number
-			Rl    A                ; multiply by two (for 16-bit address)
-			Inc   A                ; Increment A to get the first byte of the vector
-			Movc  A, @A+DPTR       ; Load first byte of vector into Acc
-			Push  Acc              ; Push the first byte onto the stack
-			Mov   A, R2            ; Reload Acc with monitor routine number
-			Rl    A                ; Multiply by two again
-			Movc  A, @A+DPTR       ; Load second byte of vector into Acc
-			Push  Acc              ; Push second byte onto the stack
-			Ret                    ; Use Ret to jump to the address on the stack
+		Mov   DPTR, #jumpTable ; point DPTR at beginning of jump table
+		Mov   A, R2            ; load Acc with monitor routine number
+		Rl    A                ; multiply by two (for 16-bit address)
+		Inc   A                ; Increment A to get the first byte of the vector
+		Movc  A, @A+DPTR       ; Load first byte of vector into Acc
+		Push  Acc              ; Push the first byte onto the stack
+		Mov   A, R2            ; Reload Acc with monitor routine number
+		Rl    A                ; Multiply by two again
+		Movc  A, @A+DPTR       ; Load second byte of vector into Acc
+		Push  Acc              ; Push second byte onto the stack
+		Ret                    ; Use Ret to jump to the address on the stack
 ;========================================================================================
 ; sendCharacter subroutine*
 ; This routine takes the character in Acc and sends it out to the serial port
 ;========================================================================================
 sendCharacter:
-			Clr  TI            		; clear the tx buffer full flag
-			Mov  SBUF,A            	; put chr in SBUF
+		Clr  TI            		; clear the tx buffer full flag
+		Mov  SBUF,A            	; put chr in SBUF
 transmitLoop:
-			Jnb  TI, transmitLoop  	; wait until chr is sent
-			Clr  TI            		; clear the tx buffer full flag
-			Ret
+		Jnb  TI, transmitLoop  	; wait until chr is sent
+		Clr  TI            		; clear the tx buffer full flag
+		Ret
 
 ;========================================================================================
 ; getCharacter subroutine* 
@@ -407,11 +407,11 @@ transmitLoop:
 ; in the accumulator
 ;========================================================================================
 getCharacter:
-			Jnb  RI, getCharacter  ; wait until character received
-			Mov  A,  SBUF          ; get character
-			Anl  A,  #7Fh          ; mask off 8th bit
-			Clr  RI                ; clear serial status bit
-			Ret
+		Jnb  RI, getCharacter  ; wait until character received
+		Mov  A,  SBUF          ; get character
+		Anl  A,  #7Fh          ; mask off 8th bit
+		Clr  RI                ; clear serial status bit
+		Ret
 		
 ;========================================================================================
 ; getByte subroutine* 
@@ -419,14 +419,14 @@ getCharacter:
 ; serial port. The result is stored in the acc.
 ;========================================================================================
 getByte:
-			Acall getCharacter      ; get msb ascii chr
-			Acall ascii2Bin         ; conv it to binary
-			Swap  A                 ; move to most sig half of acc
-			Mov   B,  A             ; save in b
-			Acall getCharacter      ; get lsb ascii chr
-			Acall ascii2Bin         ; conv it to binary
-			Orl   A,  B             ; combine two halves
-			Ret
+		Acall getCharacter      ; get msb ascii chr
+		Acall ascii2Bin         ; conv it to binary
+		Swap  A                 ; move to most sig half of acc
+		Mov   B,  A             ; save in b
+		Acall getCharacter      ; get lsb ascii chr
+		Acall ascii2Bin         ; conv it to binary
+		Orl   A,  B             ; combine two halves
+		Ret
 
 ;========================================================================================
 ; CRLF subroutine* 
