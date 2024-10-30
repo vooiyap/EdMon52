@@ -46,10 +46,10 @@ endLoop:                 	         ; come here after command has finished
 ; Monitor jump table
 ;========================================================================================
 jumpTable:
-dw changeMemory		; command 'c' -> index 0
-dw goCommand		; command 'g' -> index 1
-dw DisplayMemory 	; command 'm' -> index 2
-dw rCommand 		; command 'r' -> index 3
+		dw changeMemory		; command 'c' -> index 0
+		dw goCommand		; command 'g' -> index 1
+		dw DisplayMemory	; command 'm' -> index 2
+		dw rCommand		; command 'r' -> index 3
 	
 ;****************************************************************************************
 ; Monitor command routines                                                              *
