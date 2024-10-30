@@ -14,7 +14,7 @@
 ; http://ee6115.mit.edu/page/8051-r31jp-info.html
 ; vvy - 29/10/2024 @10:50 (BST)
 ;========================================================================================
-Stack		EQU	2Fh		; bottom of stack - stack starts at 30h
+Stack		EQU	2Fh		; bottom of stack - stack starts at 30h  
 errorFlag 	EQU 	0		; bit 0 is error status
 
 		Org 00h			; power up and reset vector
