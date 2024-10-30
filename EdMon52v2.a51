@@ -14,44 +14,44 @@
 ; http://ee6115.mit.edu/page/8051-r31jp-info.html
 ; vvy - 29/10/2024 @10:50 (BST)
 ;========================================================================================
-Stack  		EQU 	2Fh       	  ; bottom of stack - stack starts at 30h
-errorFlag 	EQU 	0         	  ; bit 0 is error status
+Stack  		EQU 	2Fh      	 ; bottom of stack - stack starts at 30h
+errorFlag 	EQU 	0         	; bit 0 is error status
 
-			Org 00h               ; power up and reset vector
-			Ljmp Start
+		Org 00h          	; power up and reset vector
+		Ljmp Start
 
 ;========================================================================================
 ; Main program starts here
 ;========================================================================================
-			Org     1000h		   ; Start address less than 0400h, program
-Start:						   	   ; stalls at 2nd row of data displayed. 
-			Mov     SP,#Stack      ; Initialize stack pointer
-			Clr     EA             ; disable interrupts
-			Acall   initSerial     ; initialize hardware
+		Org     1000h		; Start address less than 0400h, program
+Start:					; stalls at 2nd row of data displayed. 
+		Mov     SP,#Stack      	; Initialize stack pointer
+		Clr     EA             	; disable interrupts
+		Acall   initSerial     	; initialize hardware
 			
-			Acall   printString    ; print welcome message
-			db "EdMon52", 0h
+		Acall   printString    ; print welcome message
+		db "EdMon52", 0h
 			
 monitorLoop:
-			Clr     EA               ; disable all interrupts
-			Clr     errorFlag        ; clear the error flag
-			Acall   printString      ; print prompt
-			db 0Dh, 0Ah,">", 0h
-			Clr     RI               ; flush the serial input buffer
-			Acall   getCommand       ; read the single-letter command
-			Mov     R2, A            ; put the command number in R2
-			Ljmp    commandSelector  ; branch to a monitor routine
+		Clr     EA               ; disable all interrupts
+		Clr     errorFlag        ; clear the error flag
+		Acall   printString      ; print prompt
+		db 0Dh, 0Ah,">", 0h
+		Clr     RI               ; flush the serial input buffer
+		Acall   getCommand       ; read the single-letter command
+		Mov     R2, A            ; put the command number in R2
+		Ljmp    commandSelector  ; branch to a monitor routine
 endLoop:                 	         ; come here after command has finished
-			Ajmp 	monitorLoop      ; loop forever in monitor loop
+		Ajmp 	monitorLoop      ; loop forever in monitor loop
 
 ;========================================================================================
 ; Monitor jump table
 ;========================================================================================
 jumpTable:
-			dw changeMemory		 ; command 'c' -> index 0
-			dw goCommand         ; command 'g' -> index 1
-			dw DisplayMemory     ; command 'm' -> index 2
-			dw rCommand          ; command 'r' -> index 3
+		dw changeMemory		; command 'c' -> index 0
+		dw goCommand         	; command 'g' -> index 1
+		dw DisplayMemory     	; command 'm' -> index 2
+		dw rCommand          	; command 'r' -> index 3
 	
 ;****************************************************************************************
 ; Monitor command routines                                                              *
