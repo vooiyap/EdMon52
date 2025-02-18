@@ -10,7 +10,7 @@
  Q - Quit command - exits the program.  
 
 It also displays a menu of available commands, including the quit command.  
-Several subroutines written previously have been removed and replaced with MINMON subroutines. Code is now shorter.
+Several subroutines written previously have been removed and replaced with MINMON subroutines. Code is now shorter.  
  *Acknowledgement* - Subroutines marked with an asterisk (*) are adapted from MINMON - The Minimal 8051 Monitor Program by Steven B. Leeb, Massachusetts Institute of Technology.  
  See link: http://ee6115.mit.edu/page/8051-r31jp-info.html
 
