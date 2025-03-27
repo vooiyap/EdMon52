@@ -3,7 +3,7 @@
 ; educational purposes. It is developed using the Keil uVision IDE.
 ; EdMon52 is inspired by MINMON - The Minimal 8051 Monitor Program by Steven B. Leeb.
 ;
-; This is version 4.0. It includes the following commands:
+; This is version 5.0. It includes the following commands:
 ; C: - Change command - changes the contents of a specified external memory location.
 ; G: - Go command - executes a program.
 ; M: - Display Memory command - examines the contents of a specified memory location.
@@ -227,7 +227,7 @@ PointNext:  Inc R4
 EndHere:    
 			Lcall getCharacter         ; Call subroutine read key
 			Mov R7, A                  ; Save byte in R7
-			Cjne R7, #0Dh, EndHere     ; If not Carriage Return, check if it’s Line Feed
+			Cjne R7, #0Dh, EndHere     ; If not Carriage Return, check if itÂ’s Line Feed
 			Ljmp Start                 ; If Carriage Return, jump to Start
 
 ;=========================== Display Memory command ends here ===========================
