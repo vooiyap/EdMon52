@@ -1,7 +1,7 @@
  EdMon52 is an educational monitor program written for the AT89S52 for educational purposes. It is written using Keil uVision IDE.
  EdMon52 is inspired by **MINMON - The Minimal 8051 Monitor Program by Steven B. Leeb**
  
- The latest version is EdMon52 4.0 (EdMon52 4p0.a51) has the following commands:  
+ The latest version is EdMon52 5.0 (EdMon52 5p0.a51) has the following commands:  
  
  C - Change command - changes the contents of a specified external memory location.  
  G - Go command - executes a program.   
