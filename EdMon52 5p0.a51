@@ -231,7 +231,7 @@ PointNext:  Inc R4
 EndHere:    
 			Lcall getCharacter         ; Call subroutine read key
 			Mov R7, A                  ; Save byte in R7
-			Cjne R7, #0Dh, EndHere     ; If not Carriage Return, check if it’s Line Feed
+			Cjne R7, #0Dh, EndHere     ; If not Carriage Return, check if itÂ’s Line Feed
 			Ljmp Start                 ; If Carriage Return, jump to Start
 
 ;=========================== Display Memory command ends here ===========================
@@ -386,7 +386,7 @@ badParameter:
 
 ;========================================================================================
 ; getCommand subroutine 
-; The subroutine is isresponsible for receiving a user input command (a single   
+; The subroutine is is responsible for receiving a user input command (a single   
 ; character), converting it to uppercase if needed, validating it against known  
 ; commands('C', 'G', 'M', 'R', 'Q'), and mapping it to an index (stored in register R2). 
 ; This index can be used in a jump table for further processing.
