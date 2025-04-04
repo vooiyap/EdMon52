@@ -1,1 +1,1 @@
-You will the folowcharts for the Monitor Commands in the zip file.
+You will find the flowcharts for the Monitor Commands in the zip file.
