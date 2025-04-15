@@ -13,6 +13,7 @@ It also displays a menu of available commands, including the quit command.
 Several subroutines written previously have been removed and replaced with MINMON subroutines. Code is now shorter.  
 
 There is a video on the EdMon52 - see https://www.youtube.com/watch?v=iPNFnsA3sJw. 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/iPNFnsA3sJw/0.jpg)](https://www.youtube.com/watch?v=iPNFnsA3sJw)
 
  *Acknowledgement* - Subroutines marked with an asterisk (*) are adapted from MINMON - The Minimal 8051 Monitor Program by Steven B. Leeb, Massachusetts Institute of Technology.  
  See link: http://ee6115.mit.edu/page/8051-r31jp-info.html
